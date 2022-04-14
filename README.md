@@ -1,1 +1,1 @@
-# LumaOS
+# Luma OS
