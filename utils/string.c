@@ -8,11 +8,11 @@ int64 strlen(const char *str)
     return size;
 }
 
-void strappchr(const char *str, char c)
+void strappchr(char str[], char c)
 {       
     int64 length = strlen(str);
     str[length] = c;
-    str[length++] = '\0';
+    str[length+1] = '\0';
 }
 
 int8 strcmp(const char *str1, const char *str2)
@@ -31,9 +31,6 @@ int8 strcmp(const char *str1, const char *str2)
 
 char *strcpy(char *target, char *source)
 {
-    if(target == NULL)
-        return NULL;
-
     while(*source != '\0')
         *target++ = *source++;
 
@@ -59,11 +56,11 @@ void strrev(char *str)
     int64 length = strlen(str);
     int32 c;
 
-    for(int32 i = 0; int32 j = length - 1; i < j; ++i; --j)
+    for(int32 i = 0; i < length / 2; ++i)
     {
         c = str[i];
-        str[i] = str[j];
-        str[j] = c;
+        str[i] = str[i-i-1];
+        str[length-i-1] = c;
     }
 }
 
@@ -74,7 +71,7 @@ void inttostr(int16 n, char *str)
     if((sign = n) < 0)
         --n;
 
-    int16 = 0;
+    int16 i = 0;
 
     do
     {

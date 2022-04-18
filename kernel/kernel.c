@@ -1,10 +1,13 @@
 #include "../include/kernel/kernel.h"
+#include "../include/cpu/isr.h"
+#include "../include/drivers/keyboard.h"
+#include "../include/drivers/display.h"
 #include "../include/kernel/terminal.h"
-#include "../include/drivers/diplay.h"
 
 void init_kernel()
 {
     clear_screen();
+    
     print("Installing interrupt service routines (ISRs).\n");
     isr_install();
 
@@ -13,9 +16,6 @@ void init_kernel()
 
     print("Initializing keyboard (IRQ 1).\n");
     init_keyboard();
-
-    print("Initializing dynamic memory.\n");
-    init_dynamic_mem();
     
     clear_screen();
 }

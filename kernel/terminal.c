@@ -5,24 +5,21 @@
 
 void init_terminal()
 {
-    clear_screen();
     print("LumaOS > ");
 }
 
 void execute_command(char *command)
 {
-    if(strcmp(command, "EXIT") == 1)
+    if(strcmp(command, "EXIT") == 0)
     {
         print("Shutting down LumaOS!\n");
         asm volatile("hlt");
     }
-    else if(strcmp(command, "REBOOT") == 1)
+    else if(strcmp(command, "REBOOT") == 0)
     {
         print("Trying to reboot LumaOS!\n");
-        // Halt for the moment
-        asm volatile("hlt");
-    }
-
+    } 
+    
     print("Unknown command: ");
     print(command);
     print_nl();
