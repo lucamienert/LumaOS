@@ -3,6 +3,7 @@
 
 #pragma once
 
+// Commands hashed for switch
 #define EXIT 6384018879
 #define REBOOT 6952682532528
 #define CD 5862188

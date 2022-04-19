@@ -8,7 +8,7 @@
 #error "Must be compiled with i386-elf compiler!"
 #endif
 
-const char *str =
+char *str =
 " _                            ____   _____ \n"\
 "| |                          / __ \\ / ____|\n"\
 "| |    _   _ _ __ ___   __ _| |  | | (___  \n"\
@@ -30,10 +30,8 @@ void init_kernel()
     init_keyboard();
     
     clear_screen();
-
-    print_nl();
+    
     print(str);
-    print_nl();
 }
 
 void main()

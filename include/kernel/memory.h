@@ -5,7 +5,7 @@
 
 #define SIZE 50000
 
-char memory[SIZE];
+static char memory[SIZE];
 
 struct Block
 {
@@ -14,7 +14,7 @@ struct Block
     struct Block *next;
 };
 
-struct Block *freeList = (void*) memory;
+static struct Block *freeList = (void*) memory;
 
 void memory_copy(uint8 *source, uint8 *dest, uint32 nbytes);
 void *malloc(uint64 bytes);

@@ -36,7 +36,7 @@ void *malloc(uint64 bytes)
 
     cur = freeList;
 
-    while((cur->size < bytes) || ((cur->free == 0) && (cur->next != (void*)))
+    while((cur->size < bytes) || ((cur->free == 0) && (cur->next != (void*)0)))
     {
         prev = cur;
         cur = cur->next;
