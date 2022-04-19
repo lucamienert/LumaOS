@@ -4,6 +4,14 @@
 #include "../include/drivers/display.h"
 #include "../include/kernel/terminal.h"
 
+const char *str =
+" _                            ____   _____ \n"\
+"| |                          / __ \\ / ____|\n"\
+"| |    _   _ _ __ ___   __ _| |  | | (___  \n"\
+"| |   | | | | '_ ` _ \\ / _` | |  | |\\___ \\ \n"\
+"| |___| |_| | | | | | | (_| | |__| |____) |\n"\
+"|______\\__,_|_| |_| |_|\\__,_|\\____/|_____/ \n";
+
 void init_kernel()
 {
     clear_screen();
@@ -18,6 +26,8 @@ void init_kernel()
     init_keyboard();
     
     clear_screen();
+
+    print(str);
 }
 
 void main()
