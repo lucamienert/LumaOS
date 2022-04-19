@@ -27,7 +27,9 @@ void init_kernel()
     
     clear_screen();
 
+    print_nl();
     print(str);
+    print_nl();
 }
 
 void main()
