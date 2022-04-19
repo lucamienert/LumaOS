@@ -79,6 +79,9 @@ static void merge()
 
 void free(void *ptr)
 {
+    if(ptr == NULLPTR)
+        return;
+        
     if(((void*) memory > ptr) && (ptr > (void*)(memory + SIZE)))
         return;
     
