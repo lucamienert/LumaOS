@@ -4,6 +4,10 @@
 #include "../include/drivers/display.h"
 #include "../include/kernel/terminal.h"
 
+#if !defined(__i386__)
+#error "Must be compiled with i386-elf compiler!"
+#endif
+
 const char *str =
 " _                            ____   _____ \n"\
 "| |                          / __ \\ / ____|\n"\
