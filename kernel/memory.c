@@ -6,3 +6,84 @@ void memory_copy(uint8 *source, uint8 *dest, uint32 nbytes)
     for (i = 0; i < nbytes; ++i)
         *(dest + i) = *(source + i);
 }
+
+static void initialize()
+{
+    freeList->size = SIZE - sizeof(struct Block);
+    freeList->free = 1;
+    freeList->next = NULLPTR;
+} 
+
+static void split(struct Block *slot, uint64 size)
+{
+    struct Block *block = slot + size + sizeof(struct Block);
+    block->size = (slot->size) - size - sizeof(struct Block);
+    block->free = 1;
+    block->next = slot->next;
+
+    slot->size = size;
+    slot->free = 0;
+    slot->next = block;
+}
+
+void *malloc(uint64 bytes)
+{
+    struct Block *cur, *prev;
+    void *result;
+
+    if(!(freeList->size))
+        initialize();
+
+    cur = freeList;
+
+    while((cur->size < bytes) || ((cur->free == 0) && (cur->next != (void*)))
+    {
+        prev = cur;
+        cur = cur->next;
+    }
+
+    if(cur->size == bytes)
+    {
+        cur->free = 0;
+        result = (void*)(++cur);
+        return result;
+    }
+    else if(cur->size < bytes + sizeof(struct Block))
+    {
+        split(cur, bytes);
+        result = (void*)(++cur);
+        return result;
+    }
+    
+    result = NULLPTR;
+    return result;
+}
+
+static void merge()
+{
+    struct Block *cur, *prev;
+    cur = freeList;
+
+    while(cur->free != 0)
+    {
+        if(cur->free && cur->next->free)
+        {
+            cur->size += cur->next->size + sizeof(struct Block);
+            cur->next = cur->next->next;
+        }
+
+        prev = cur;
+        cur = cur->next;
+    }
+}
+
+void free(void *ptr)
+{
+    if(((void*) memory > ptr) && (ptr > (void*)(memory + SIZE)))
+        return;
+    
+    struct Block *cur = ptr;
+    --cur;
+    cur->free = 1;
+    merge();
+}
