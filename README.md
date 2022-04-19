@@ -16,6 +16,7 @@ Features to implement (or already implemented):
 - [ ] Mouse drivers
 - [ ] Terminal (Shell)
 - [ ] Dynamic memory allocation (heap allocation)
+- [ ] Adding custom language for further development
 
 ## Usage
 
