@@ -2,7 +2,51 @@
 
 ## Description
 
+LumaOS is a x86 32-bit toy operating system, which I am developing to teach myself how computers work.
+It is still in an very early development state, so don't try to use it (it will crash everything).
+LumaOS is primarily based on [this](https://github.com/cfenollosa/os-tutorial) Tutorial from Carlos Fenollosas.
+
+Features to implement (or already implemented):
+
+- [ ] Kernel (interfaced with the GRUB bootloader)
+- [ ] Global descriptor table (GDT)
+- [ ] ISRs for CPU interrupt handling
+- [ ] VGA graphics
+- [ ] Keyboard drivers
+- [ ] Mouse drivers
+- [ ] Terminal (Shell)
+- [ ] Dynamic memory allocation (heap allocation)
+
 ## Usage
+
+### Prerequisites
+
+- qemu
+- nasm
+- make
+- i386-elf-binutils
+- i386-elf-gcc
+- i386-elf-gdb
+- xorriso
+- grub-mkrescue
+
+Example using Pamac (Arch Linux AUR helper):
+
+```bash
+pamac install qemu nasm make i386-elf-binutils i386-elf-gcc i386-elf-gdb xorriso grub-mkrescue
+```
+
+### Using
+
+```bash
+make run
+```
+
+### Cleaning the project
+
+```bash
+make clean
+```
 
 ## Resources
 
