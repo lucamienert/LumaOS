@@ -1,6 +1,6 @@
 #pragma once
 
-#include "inttypes.h"
+#include "types.h"
 
 int64 strlen(const char *str);
 void strappchr(char str[], char c);

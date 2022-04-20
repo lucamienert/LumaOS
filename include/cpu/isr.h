@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../utils/inttypes.h"
+#include "../utils/types.h"
 
 #define IRQ0 32
 #define IRQ1 33

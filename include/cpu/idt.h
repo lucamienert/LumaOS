@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../utils/inttypes.h"
+#include "../utils/types.h"
 
 #define KERNEL_CS 0x08
 #define IDT_ENTRIES 256

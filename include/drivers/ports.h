@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "../utils/inttypes.h"
+#include "../utils/types.h"
 
 uint8 port_byte_in(uint16 port);
 void port_byte_out(uint16 port, uint8 data);

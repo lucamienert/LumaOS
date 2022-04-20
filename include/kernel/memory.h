@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../utils/inttypes.h"
+#include "../utils/types.h"
 #include "../utils/null.h"
 
 #define SIZE 50000

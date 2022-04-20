@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "../utils/inttypes.h"
+#include "../utils/types.h"
 
 #define VIDEO_ADDRESS 0xb8000
 #define MAX_ROWS 50

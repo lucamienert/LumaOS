@@ -1,7 +1,6 @@
 #include "../include/kernel/terminal.h"
 #include "../include/drivers/display.h"
 #include "../include/utils/string.h"
-#include "../include/utils/inttypes.h"
 
 static const uint64 hash(const char *str) {
     uint64 hash = 5381;  

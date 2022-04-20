@@ -1,5 +1,5 @@
 #include "../include/utils/string.h"
-#include "../include/utils/inttypes.h"
+#include "../include/utils/types.h"
 
 int64 strlen(const char *str)
 {
