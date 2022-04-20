@@ -59,6 +59,17 @@ void *malloc(uint64 bytes)
     return result;
 }
 
+static uint64 get_size(void *ptr)
+{
+    uint64 *in = ptr;
+
+    if(!in)
+        return -1;
+
+    --in;
+    return *in;
+}
+
 static void merge()
 {
     struct Block *cur, *prev;
@@ -89,4 +100,18 @@ void free(void *ptr)
     --cur;
     cur->free = 1;
     merge();
+}
+
+void *realloc(void *ptr, uint64 size)
+{
+    void *new;
+    int64 msize = get_size(ptr);
+
+    if(size <= msize)
+        return ptr;
+
+    new = malloc(size);
+    memory_copy(new, ptr, msize);
+    free(ptr);
+    return new;
 }
