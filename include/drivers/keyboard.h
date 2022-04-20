@@ -1,5 +1,5 @@
-#ifndef LMOS_KEYBOARD_H_
-#define LMOS_KEYBOARD_H_
+#ifndef LUMAOS_KEYBOARD_H_
+#define LUMAOS_KEYBOARD_H_
 
 #pragma once
 

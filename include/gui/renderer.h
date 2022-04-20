@@ -1,3 +1,6 @@
+#ifndef LUMAOS_RENDERER_H_
+#define LUMAOS_RENDERER_H_
+
 #pragma once
 
 struct Pixel
@@ -13,3 +16,5 @@ typedef struct Renderer
 } renderer_t;
 
 renderer_t *init_renderer();
+
+#endif

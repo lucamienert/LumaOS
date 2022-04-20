@@ -1,3 +1,6 @@
+#ifndef LUMAOS_TYPES_H_
+#define LUMAOS_TYPES_H_
+
 #pragma once
 
 // Signed Integers
@@ -15,3 +18,5 @@ typedef unsigned long int uint64;
 // Floating numbers
 typedef float float32;
 typedef double float64;
+
+#endif

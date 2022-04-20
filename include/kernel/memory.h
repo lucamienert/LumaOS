@@ -1,3 +1,6 @@
+#ifndef LUMAOS_MEMORY_H_
+#define LUMAOS_MEMORY_H_
+
 #pragma once
 
 #include "../utils/types.h"
@@ -19,3 +22,5 @@ static struct Block *freeList = (void*) memory;
 void memory_copy(uint8 *source, uint8 *dest, uint32 nbytes);
 void *malloc(uint64 bytes);
 void free(void *ptr);
+
+#endif

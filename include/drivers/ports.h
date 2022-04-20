@@ -1,5 +1,5 @@
-#ifndef LMOS_PORTS_H_
-#define LMOS_PORTS_H_
+#ifndef LUMAOS_PORTS_H_
+#define LUMAOS_PORTS_H_
 
 #pragma once
 

@@ -1,5 +1,5 @@
-#ifndef LMOS_DISPLAY_H_
-#define LMOS_DISPLAY_H_
+#ifndef LUMAOS_DISPLAY_H_
+#define LUMAOS_DISPLAY_H_
 
 #pragma once
 

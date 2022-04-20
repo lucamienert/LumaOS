@@ -1,3 +1,6 @@
+#ifndef LUMAOS_ISR_H_
+#define LUMAOS_ISR_H_
+
 #pragma once
 
 #include "../utils/types.h"
@@ -81,3 +84,5 @@ void isr_install();
 void isr_handler(registers_t *r);
 typedef void (*isr_t)(registers_t *);
 void register_interrupt_handler(uint8 n, isr_t handler);
+
+#endif

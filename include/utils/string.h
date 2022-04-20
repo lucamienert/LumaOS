@@ -1,3 +1,6 @@
+#ifndef LUMAOS_STRING_H_
+#define LUMAOS_STRING_H_
+
 #pragma once
 
 #include "types.h"
@@ -9,3 +12,5 @@ char *strcpy(char *target, char *source);
 int8 strback(char *str);
 void inttostr(int16 n, char *str);
 void strrev(char *str);
+
+#endif

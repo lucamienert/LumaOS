@@ -1,3 +1,6 @@
+#ifndef LUMAOS_IDT_H_
+#define LUMAOS_IDT_H_
+
 #pragma once
 
 #include "../utils/types.h"
@@ -25,3 +28,5 @@ typedef struct
 
 void set_idt_gate(int n, uint32 handler);
 void load_idt();
+
+#endif
