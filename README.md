@@ -9,13 +9,14 @@ LumaOS is primarily based on [this](https://github.com/cfenollosa/os-tutorial) T
 Features to implement (or already implemented):
 
 - [ ] Kernel (interfaced with the GRUB bootloader)
-- [ ] Global descriptor table (GDT)
-- [ ] ISRs for CPU interrupt handling
-- [ ] VGA graphics
-- [ ] Keyboard drivers
+- [x] Global descriptor table (GDT)
+- [x] ISRs for CPU interrupt handling
+- [x] VGA graphics
+- [x] Keyboard drivers
+- [ ] Filesystem (potentially ext2)
 - [ ] Mouse drivers
 - [ ] Terminal (Shell)
-- [ ] Dynamic memory allocation (heap allocation)
+- [x] Dynamic memory allocation
 - [ ] Adding custom language for further development
 
 ## Usage
