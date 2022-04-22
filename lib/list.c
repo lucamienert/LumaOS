@@ -1,8 +1,8 @@
-#include "../include/lib/list.h"
+#include "include/list.h"
 
-list_t *init_list(int64 item_size)
+list_t *init_list(int64_t item_size)
 {
-    list_t *list = (list_t*) malloc(sizeof(struct LIST_STRUCT));
+    list_t *list = (list_t*) malloc(sizeof(struct List));
     list->size = 0;
     list->item_size = item_size;
     list->items = 0;
@@ -18,4 +18,10 @@ void list_append(list_t *list, void *item)
         
     list->items = malloc(list->item_size);
     list->items[list->size - 1] = item;
+}
+
+void delete_list(list_t *list)
+{
+    free(list->items);
+    free(list);
 }
