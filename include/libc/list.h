@@ -6,6 +6,10 @@
 #include "stdint.h"
 #include "stdlib.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct List
 {
     void **items;
@@ -16,5 +20,9 @@ typedef struct List
 list_t *init_list(int64 item_size);
 void list_append(list_t *list, void *item);
 void delete_list(list_t *list);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

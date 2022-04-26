@@ -5,6 +5,10 @@
 
 #include "stdint.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define PACKED __attribute__((packed))
 
 #define CLI() __asm__ volatile("cli")
@@ -22,5 +26,9 @@
 
 #define high_8(address) \
     (uint8)(((address) >> 8) & 0xFF)
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

@@ -6,6 +6,10 @@
 #include "stdint.h"
 #include "stdnull.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define SIZE 50000
 
 static char memory[SIZE];
@@ -25,5 +29,9 @@ void memset(void *dst, uint8_t value, size_t nbytes);
 void *malloc(uint64 bytes);
 void free(void *ptr);
 void *realloc(void *ptr, uint64 size);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

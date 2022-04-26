@@ -3,6 +3,10 @@
 
 #pragma once
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef signed char int8;
 typedef short int int16;
 typedef int int32;
@@ -17,5 +21,9 @@ typedef float float32;
 typedef double float64;
 
 typedef uint32 size_t;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

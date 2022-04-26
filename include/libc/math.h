@@ -5,6 +5,10 @@
 
 #include "stdint.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #define MIN(a, b) \
     a < b ? a : b
 
@@ -17,5 +21,9 @@
 float64 abs(float64 x);
 float64 sin(float64 x);
 float64 cos(float64 x);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
