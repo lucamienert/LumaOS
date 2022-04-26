@@ -5,6 +5,8 @@
 
 #include "../libc/stdint.h"
 
+#define HZ 1193180
+
 void init_timer(uint32 frequency);
 
 #endif
