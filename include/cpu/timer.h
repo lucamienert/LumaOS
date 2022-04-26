@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "../utils/types.h"
+#include "../libc/stdint.h"
 
 void init_timer(uint32 frequency);
 

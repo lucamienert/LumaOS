@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "../utils/types.h"
+#include "../libc/stdint.h"
 
 #define STACK_SIZE 4096
 

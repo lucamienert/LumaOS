@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "../utils/types.h"
+#include "../libc/stdint.h"
 
 #define KERNEL_CS 0x08
 #define IDT_ENTRIES 256

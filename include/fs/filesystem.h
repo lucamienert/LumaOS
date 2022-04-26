@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "../utils/types.h"
+#include "../libc/stdint.h"
 
 #define MAX_FILENAME 128
 

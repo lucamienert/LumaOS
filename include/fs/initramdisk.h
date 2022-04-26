@@ -4,8 +4,8 @@
 #pragma once
 
 #include "filesystem.h"
-#include "../utils/types.h"
-#include "../utils/string.h"
+#include "../libc/stdint.h"
+#include "../libc/string.h"
 #include "../kernel/memory.h"
 
 typedef struct

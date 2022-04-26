@@ -1,10 +1,10 @@
-#ifndef LUMAOS_MEMORY_H_
-#define LUMAOS_MEMORY_H_
+#ifndef LUMAOS_STDLIB_H_
+#define LUMAOS_STDLIB_H_
 
 #pragma once
 
-#include "../libc/stdint.h"
-#include "../libc/stdnull.h"
+#include "stdint.h"
+#include "stdnull.h"
 
 #define SIZE 50000
 
@@ -19,7 +19,9 @@ struct Block
 
 static struct Block *freeList = (void*) memory;
 
-void memory_copy(uint8 *source, uint8 *dest, uint32 nbytes);
+void memcpy(void *source, void *dest, size_t nbytes);
+void memset(void *dst, uint8_t value, size_t nbytes);
+
 void *malloc(uint64 bytes);
 void free(void *ptr);
 void *realloc(void *ptr, uint64 size);

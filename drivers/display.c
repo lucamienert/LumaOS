@@ -1,7 +1,7 @@
 #include "../include/drivers/display.h"
 #include "../include/drivers/ports.h"
 #include "../include/kernel/memory.h"
-#include "../include/utils/string.h"
+#include "../include/libc/string.h"
 
 static void set_cursor(int32 offset) 
 {

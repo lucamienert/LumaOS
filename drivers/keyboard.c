@@ -3,7 +3,7 @@
 #include "../include/drivers/display.h"
 #include "../include/cpu/isr.h"
 #include "../include/kernel/terminal.h"
-#include "../include/utils/string.h"
+#include "../include/libc/string.h"
 
 #define BACKSPACE 0x0E
 #define ENTER 0x1C
