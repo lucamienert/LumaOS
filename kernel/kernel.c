@@ -34,7 +34,7 @@ void init_kernel()
     
     print(str);
 
-    switch_to_user_mode();
+    //switch_to_user_mode();
 }
 
 void main()

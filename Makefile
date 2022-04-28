@@ -1,5 +1,5 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c utils/*c)
-HEADERS = $(wildcard include/kernel/*.h  include/drivers/*.h include/cpu/*.h include/utils/*.h)
+C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*c)
+HEADERS = $(wildcard include/kernel/*.h  include/drivers/*.h include/cpu/*.h include/libc/*.h)
 OBJ_FILES = ${C_SOURCES:.c=.o include/cpu/interrupt.o}
 KERNEL_ENTRY = boot/kernel_entry.o
 

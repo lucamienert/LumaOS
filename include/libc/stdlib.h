@@ -24,11 +24,11 @@ struct Block
 static struct Block *freeList = (void*) memory;
 
 void memcpy(void *source, void *dest, size_t nbytes);
-void memset(void *dst, uint8_t value, size_t nbytes);
+void memset(void *dst, uint8 value, size_t nbytes);
 
-void *malloc(uint64 bytes);
+/*void *malloc(uint64 bytes);
 void free(void *ptr);
-void *realloc(void *ptr, uint64 size);
+void *realloc(void *ptr, uint64 size);*/
 
 #ifdef __cplusplus
 }

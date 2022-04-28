@@ -1,10 +1,16 @@
 #include "../include/libc/stdlib.h"
 
-void memcpy(void *source, void *dest, size_t nbytes)
+/*void memcpy(void *source, void *dest, size_t nbytes)
 {
-    int32 i;
-    for (i = 0; i < nbytes; ++i)
-        *(dest + i) = *(source + i);
+    //for (int32 i = 0; i < nbytes; ++i)
+        //*(dest + i) = *(source + i);
+
+    char *csrc = (char *)source;
+    char *cdest = (char *)dest;
+  
+   // Copy contents of src[] to dest[]
+   for (int i=0; i<nbytes; i++)
+       cdest[i] = csrc[i];
 }
 
 void memset(void *dst, uint8 value, size_t nbytes)
@@ -13,10 +19,6 @@ void memset(void *dst, uint8 value, size_t nbytes)
     while (nbytes-- > 0)
         *d++ = value;
 }
-
-/**
- * Replace with memory functions
- */
 
 static void initialize()
 {
@@ -122,7 +124,7 @@ void *realloc(void *ptr, uint64 size)
         return ptr;
 
     new = malloc(size);
-    memory_copy(new, ptr, msize);
+    memcpy(new, ptr, msize);
     free(ptr);
     return new;
-}
+}*/
