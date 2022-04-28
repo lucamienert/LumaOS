@@ -3,6 +3,7 @@
 #include "../include/drivers/keyboard.h"
 #include "../include/drivers/display.h"
 #include "../include/kernel/terminal.h"
+#include "../include/kernel/usermode.h"
 
 #if !defined(__i386__)
 #error "Must be compiled with i386-elf compiler!"
@@ -32,6 +33,8 @@ void init_kernel()
     clear_screen();
     
     print(str);
+
+    switch_to_user_mode();
 }
 
 void main()
