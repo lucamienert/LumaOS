@@ -1,6 +1,6 @@
-#include "../include/libc/list.h"
+#include <list.h>
 
-list_t *init_list(int64 item_size)
+list_t *list_init(int64_t item_size)
 {
     list_t *list = (list_t*) malloc(sizeof(struct List));
     list->size = 0;
@@ -20,8 +20,38 @@ void list_append(list_t *list, void *item)
     list->items[list->size - 1] = item;
 }
 
-void delete_list(list_t *list)
+void list_delete(list_t *list)
 {
     free(list->items);
     free(list);
+}
+
+ordered_list_t ordered_list_init(uint32_t max_size, lessthan_predicate_t less_than)
+{
+    ordered_list_t list;
+}
+
+ordered_list_t ordered_list_place(void *addr, uint32_t max_size, lessthan_predicate_t less_than)
+{
+    ordered_list_t list;
+}
+
+void ordered_list_destroy(ordered_list_t *list)
+{
+
+}
+
+void ordered_list_insert(type_t item, ordered_list_t *list)
+{
+
+}
+
+type_t ordered_list_get(uint32_t index, ordered_list_t *list)
+{
+    return list->array[index];
+}
+
+void orderer_list_destroy_at(uint32_t index, ordered_list_t *list)
+{
+
 }

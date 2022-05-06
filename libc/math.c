@@ -1,15 +1,15 @@
-#include "../include/libc/math.h"
+#include <math.h>
 
-float64 abs(float64 x) {
+float64_t abs(float64_t x) {
     return x < 0.0 ? -x : x;
 }
 
-float64 sin(float64 x) {
-    float64 result;
+float64_t sin(float64_t x) {
+    float64_t result;
     asm("fsin" : "=t"(result) : "0"(x));
     return result;
 }
 
-float64 cos(float64 x) {
+float64_t cos(float64_t x) {
     return sin(x + PI / 2.0);
 }
