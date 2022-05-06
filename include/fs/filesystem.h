@@ -1,10 +1,9 @@
-// http://www.jamesmolloy.co.uk/tutorial_html/8.-The%20VFS%20and%20the%20initrd.html
 #ifndef LUMAOS_FILESYSTEM_H_
 #define LUMAOS_FILESYSTEM_H_
 
 #pragma once
 
-#include "../libc/stdint.h"
+#include <stdint.h>
 
 #define MAX_FILENAME 128
 
@@ -16,31 +15,31 @@
 #define FS_SYMLINK     0x06
 #define FS_MOUNTPOINT  0x08
 
-struct Filesystem_Node;
+struct FilesystemNode;
 
 struct Dirent
 {
     char name[MAX_FILENAME];
-    uint32 ino;
+    uint32_t ino;
 };
 
-typedef uint32 (*read_type_t)(struct Filesystem_Node*, uint32, uint32, uint8*);
-typedef uint32 (*write_type_t)(struct Filesystem_Node*, uint32, uint32, uint8*);
-typedef void (*open_type_t)(struct Filesystem_Node*);
-typedef void (*close_type_t)(struct Filesystem_Node*);
-typedef char* (*readdir_type_t)(struct Filesystem_Node*, uint32);
-typedef struct Filesystem_Node* (*finddir_type_t)(struct Filesystem_Node*, char *name);
+typedef uint32_t (*read_type_t)(struct FilesystemNode*, uint32_t, uint32_t, uint8_t*);
+typedef uint32_t (*write_type_t)(struct FilesystemNode*, uint32_t, uint32_t, uint8_t*);
+typedef void (*open_type_t)(struct FilesystemNode*);
+typedef void (*close_type_t)(struct FilesystemNode*);
+typedef char* (*readdir_type_t)(struct FilesystemNode*, uint32_t);
+typedef struct FilesystemNode* (*finddir_type_t)(struct FilesystemNode*, char *name);
 
-typedef struct Filesystem_Node
+typedef struct FilesystemNode
 {
     char name[MAX_FILENAME];
-    uint32 mask;
-    uint32 uid;
-    uint32 gid;
-    uint32 flags;
-    uint32 inode;
-    uint32 length;
-    uint32 impl;
+    uint32_t mask;
+    uint32_t uid;
+    uint32_t gid;
+    uint32_t flags;
+    uint32_t inode;
+    uint32_t length;
+    uint32_t impl;
 
     read_type_t read;
     write_type_t write;
@@ -49,16 +48,16 @@ typedef struct Filesystem_Node
     readdir_type_t readdir;
     finddir_type_t finddir;
 
-    struct Filesystem_Node *link;
+    struct FilesystemNode *link;
 } filesystem_node_t;
 
 extern filesystem_node_t *filesystem_root;
 
-uint32 read_filesystem(filesystem_node_t *node, uint32 offset, uint32 size, uint8 *buffer);
-uint32 write_filesystem(filesystem_node_t *node, uint32 offset, uint32 size, uint8 *buffer);
+uint32_t read_filesystem(filesystem_node_t *node, uint32_t offset, uint32_t size, uint8_t *buffer);
+uint32_t write_filesystem(filesystem_node_t *node, uint32_t offset, uint32_t size, uint8_t *buffer);
 void open_filesystem(filesystem_node_t *node);
 void close_filesystem(filesystem_node_t *node);
-struct Dirent *read_directory(filesystem_node_t *node, uint32 index);
+struct Dirent *read_directory(filesystem_node_t *node, uint32_t index);
 filesystem_node_t *find_directory(filesystem_node_t *node, char *name);
 
 #endif

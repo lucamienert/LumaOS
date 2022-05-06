@@ -3,24 +3,25 @@
 
 #pragma once
 
-#include "filesystem.h"
-#include "../libc/stdint.h"
-#include "../libc/string.h"
-#include "../kernel/memory.h"
+#include <fs/filesystem.h>
+
+#include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
 
 typedef struct
 {
-    uint32 number_of_files;
+    uint32_t number_of_files;
 } initrd_header_t;
 
 typedef struct
 {
-    uint8   magic;
-    int8    name[64];
-    uint32  offset;
-    uint32  length;
+    uint8_t magic;
+    int8_t name[64];
+    uint32_t offset;
+    uint32_t length;
 } initrd_file_header_t;
 
-filesystem_node_t *init_initial_ram_disk(uint32 location);
+filesystem_node_t *init_initial_ram_disk(uint32_t location);
 
 #endif

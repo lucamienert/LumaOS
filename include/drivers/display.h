@@ -3,20 +3,39 @@
 
 #pragma once
 
-#include "../libc/stdint.h"
+#include <stdint.h>
 
 #define VIDEO_ADDRESS 0xb8000
-#define MAX_ROWS 50
-#define MAX_COLS 160
-#define WHITE_ON_BLACK 0x0f
 
-#define REG_SCREEN_CTRL 0x3d4
-#define REG_SCREEN_DATA 0x3d5
+#define SCREEN_WIDTH 80
+#define SCREEN_HEIGHT 25
 
-void print(char *str);
-void print_nl();
-void clear_screen();
-int8 scroll_ln(int8 offset);
-void print_backspace();
+#define REG_SCREEN_CTRL 0x3D4
+#define REG_SCREEN_DATA 0x3D5
+
+enum
+{
+    BLACK,
+    BLUE,
+    GREEN,
+    CYAN,
+    RED,
+    MAGENTA,
+    BROWN,
+    LIGHT_GRAY,
+    GRAY,
+    LIGHT_BLUE,
+    LIGHT_GREEN,
+    LIGHT_CYAN,
+    LIGHT_RED,
+    LIGHT_MAGENTA,
+    YELLOW,
+    WHITE
+};
+
+void display_put(char c);
+void display_print(char *str);
+void display_clear();
+void display_backspace();
 
 #endif
