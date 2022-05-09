@@ -1,46 +1,49 @@
-C_SOURCES = $(wildcard kernel/*.c drivers/*.c cpu/*.c libc/*c)
-HEADERS = $(wildcard include/kernel/*.h  include/drivers/*.h include/cpu/*.h include/libc/*.h)
-OBJ_FILES = ${C_SOURCES:.c=.o include/cpu/interrupt.o}
-KERNEL_ENTRY = boot/kernel_entry.o
+ASM_FILES = $(wildcard boot/*.s)
+C_SOURCES = $(wildcard kernel/*.c kernel/memory/*.c kernel/cpu/*.c drivers/*.c cpu/*.c libc/*c fs/*.c gui/*.c)
+HEADERS = $(wildcard include/*.h include/kernel/*.h include/kernel/cpu/*.h include/kernel/memory/*.h include/drivers/*.h include/asm/*.h include/gui/*.h include/fs/*h include/system/*.h)
 
-all: run
+C_OBJ_FILES = ${C_SOURCES:.c=.o}
+ASM_OBJ_FILES = ${ASM_FILES:.s=.o}
 
-kernel.bin: ${KERNEL_ENTRY} ${OBJ_FILES}
-	x86_64-elf-ld -m elf_i386 -o $@ -Ttext 0x1000 $^ --oformat binary
+C_FLAGS = -m32 -ffreestanding -Wall -I./include -nostdlib
 
-os-image.bin: boot/mbr.bin kernel.bin
-	cat $^ > $@
+OUTPUT_ISO = LumaOS.iso
 
-run: os-image.bin
-	qemu-system-i386 -fda $<
+all: multiboot buildgrub run
 
-echo: os-image.bin
-	xxd $<
+%.o: ${ASM_FILES}
+	@echo "[Makefile]: Converting Assembly Files"
+	as --32 $< -o $@
 
-kernel.elf: ${KERNEL_ENTRY} ${OBJ_FILES}
-	x86_64-elf-ld -m elf_i386 -o $@ -Ttext 0x1000 $^
+%.o: ${C_SOURCES} ${HEADERS}
+	@echo "[Makefile]: Converting C Files"
+	x86_64-elf-gcc -g ${C_FLAGS} -c $< -o $@
 
-debug: os-image.bin kernel.elf
-	qemu-system-i386 -s -S -fda os-image.bin -d guest_errors,int &
-	i386-elf-gdb -ex "target remote localhost:1234" -ex "symbol-file kernel.elf"
+LumaOS.bin: ${ASM_OBJ_FILES} ${C_OBJ_FILES}
+	@echo "[Makefile]: Linking the object Files"
+	x86_64-elf-ld -m elf_i386 -T linker.ld -o $@ $^ -nostdlib
 
-%.o: %.c ${HEADERS}
-	x86_64-elf-gcc -g -m32 -ffreestanding -c $< -o $@
+multiboot: LumaOS.bin
+	@echo "[Makefile]: Checking if Binary iss x86 Multiboot...""
+	grub-file --is-x86-multiboot $<
 
-%.o: %.asm
-	nasm $< -f elf -o $@
+buildgrub: LumaOS.bin
+	@echo "[Makefile]: Copying the everything to ./bin Folder"
+	mkdir -p bin/boot/grub
+	cp $< bin/boot/$<
+	cp grub.cfg bin/boot/grub/grub.cfg
+	@echo "[Makefile]: Creating ISO"
+	grub-mkrescue -o ${OUTPUT_ISO} bin
 
-%.bin: %.asm
-	nasm $< -f bin -o $@
-
-%.dis: %.bin
-	ndisasm -b 32 $< > $@
+run:
+	@echo "[Makefile]: Running the ISO"
+	qemu-system-i386 -cdrom bin/${OUTPUT_ISO}
 
 clean:
-	$(RM) *.bin *.o *.dis *.elf
-	$(RM) kernel/*.o
-	$(RM) boot/*.o boot/*.bin
-	$(RM) drivers/*.o
-	$(RM) cpu/*.o
-	$(RM) include/cpu/*.o
-	$(RM) utils/*.o
+	rm bin/*.bin *.o *.dis *.elf
+	rm kernel/*.o
+	rm boot/*.o
+	rm drivers/*.o
+	rm fs/*.o
+	rm gui/*.o
+	rm libc/*.o
