@@ -1,4 +1,4 @@
-#include "../include/fs/initramdisk.h"
+#include <fs/initramdisk.h>
 
 initrd_header_t *initrd_header;
 initrd_file_header_t *file_headers;
@@ -7,11 +7,11 @@ filesystem_node_t *initrd_root;
 filesystem_node_t *initrd_dev;
 filesystem_node_t *root_nodes;
 
-int32 number_of_root_nodes;
+int32_t number_of_root_nodes;
 
 struct Dirent dirent;
 
-static uint32 initramdisk_read(filesystem_node_t *node, uint32 offset, uint32 size, uint8 *buffer)
+static uint32_t initramdisk_read(filesystem_node_t *node, uint32_t offset, uint32_t size, uint8_t *buffer)
 {
     initrd_file_header_t header = file_headers[node->inode];
 
@@ -21,11 +21,11 @@ static uint32 initramdisk_read(filesystem_node_t *node, uint32 offset, uint32 si
     if(offset + size > header.length)
         size = header.length - offset;
 
-    memory_copy(buffer, (uint8*)(header.offset + offset), size);
+    memcpy(buffer, (uint8_t*)(header.offset + offset), size);
     return size;
 }
 
-static struct Dirent *initramdisk_readdir(filesystem_node_t *node, uint32 index)
+static struct Dirent *initramdisk_readdir(filesystem_node_t *node, uint32_t index)
 {
     if(index - 1 > number_of_root_nodes)
         return 0;
@@ -49,7 +49,7 @@ static filesystem_node_t *initramdisk_finddir(filesystem_node_t *node, char *nam
     if(node == initrd_root && !strcmp(name, "dev"))
         return initrd_dev;
 
-    for(int i = 0; i < number_of_root_nodes; ++i)
+    for(int32_t i = 0; i < number_of_root_nodes; ++i)
     {
         if(!strcmp(name, root_nodes[i].name))
             return &root_nodes[i];
@@ -58,7 +58,7 @@ static filesystem_node_t *initramdisk_finddir(filesystem_node_t *node, char *nam
     return 0;
 }
 
-filesystem_node_t *init_initial_ram_disk(uint32 location)
+filesystem_node_t *init_initial_ram_disk(uint32_t location)
 {
     // Init main and header fie pointers
     initrd_header = (initrd_header_t *) location;
@@ -102,7 +102,7 @@ filesystem_node_t *init_initial_ram_disk(uint32 location)
     root_nodes = (filesystem_node_t *) malloc(sizeof(filesystem_node_t *) * initrd_header->number_of_files);
     number_of_root_nodes = initrd_header->number_of_files;
 
-    for(int i = 0; i < initrd_header->number_of_files; ++i)
+    for(int32_t i = 0; i < initrd_header->number_of_files; ++i)
     {
         file_headers[i].offset += location;
         strcpy(root_nodes[i].name, &file_headers[i].name);

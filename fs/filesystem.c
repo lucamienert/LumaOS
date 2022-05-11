@@ -1,13 +1,13 @@
-#include "../include/fs/filesystem.h"
+#include <fs/filesystem.h>
 
 filesystem_note_t *filesystem_root = 0;
 
-uint32 read_filesystem(filesystem_node_t *node, uint32 offset, uint32 size, uint8 *buffer)
+uint32_t read_filesystem(filesystem_node_t *node, uint32_t offset, uint32_t size, uint8_t *buffer)
 {
     return node->read != 0 ? node->read(node, offset, size, buffer) : 0;
 }
 
-uint32 write_filesystem(filesystem_node_t *node, uint32 offset, uint32 size, uint8 *buffer)
+uint32_t write_filesystem(filesystem_node_t *node, uint32_t offset, uint32_t size, uint8_t *buffer)
 {
     return node->write != 0 ? node->write(node, offset, size, buffer) : 0;
 }
@@ -24,7 +24,7 @@ void close_filesystem(filesystem_node_t *node)
         return node->close(node);
 }
 
-struct Dirent *read_directory(filesystem_node_t *node, uint32 index)
+struct Dirent *read_directory(filesystem_node_t *node, uint32_t index)
 {
     return (node->flags & 0x7) == FS_DIRECTORY && node->readdir != 0
         ? node->readdir(node, index);
