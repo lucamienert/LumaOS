@@ -1,4 +1,4 @@
-ENTRY(_start)
+ENTRY(main)
 OUTPUT_FORMAT(elf32-i386)
 OUTPUT_ARCH(i386:i386)
 
@@ -33,4 +33,6 @@ SECTIONS
         *(.fini_array*)
         *(.comment)
     }
+    
+    end = .; _end = .; __end = .;
 }
