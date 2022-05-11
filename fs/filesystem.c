@@ -1,6 +1,6 @@
 #include <fs/filesystem.h>
 
-filesystem_note_t *filesystem_root = 0;
+filesystem_node_t *filesystem_root = 0;
 
 uint32_t read_filesystem(filesystem_node_t *node, uint32_t offset, uint32_t size, uint8_t *buffer)
 {
