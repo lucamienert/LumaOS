@@ -3,8 +3,4 @@
 
 #pragma once
 
-#include <stdint.h>
-
-void kernel_main(int32_t initial_stack);
-
 #endif
