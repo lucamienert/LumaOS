@@ -4,7 +4,12 @@
 #pragma once
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <panic.h>
 #include <kernel/cpu/isr.h>
+
+#define INDEX_FROM_BIT(a) (a / (8 * 4))
+#define OFFSET_FROM_BIT(a) (a % (8 * 4))
 
 typedef struct Page
 {
@@ -31,6 +36,8 @@ typedef struct PageDirectory
 
 void init_paging();
 void switch_page_directory(page_directory_t *newDir);
+void alloc_frame(page_t *page, int32_t is_kernel, int32_t is_writable);
+void free_frame(page_t *page);
 page_t *get_page(uint32_t address, int32_t make, page_directory_t *dir);
 void page_fault(registers_t *regs);
 page_directory_t *clone_directory(page_directory_t *src);
