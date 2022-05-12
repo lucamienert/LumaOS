@@ -7,6 +7,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* LINKED LIST */
 typedef struct List
 {
@@ -36,5 +40,9 @@ void ordered_list_destroy(ordered_list_t *list);
 void ordered_list_insert(type_t item, ordered_list_t *list);
 type_t ordered_list_get(uint32_t index, ordered_list_t *list);
 void orderer_list_destroy_at(uint32_t index, ordered_list_t *list);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
