@@ -4,7 +4,7 @@
 
 LumaOS is a x86 32-bit toy operating system, which I am developing to teach myself how computers work.
 It is still in an very early development state, so don't try to use it (it will crash everything).
-LumaOS is primarily based on [this](https://github.com/cfenollosa/os-tutorial) Tutorial from Carlos Fenollosas.
+LumaOS is primarily based on the Tutorials from James Molloy.
 
 Features to implement (or already implemented):
 
