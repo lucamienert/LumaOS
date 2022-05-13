@@ -1,4 +1,4 @@
-ASM_FILES = $(wildcard boot/*.s)
+ASM_FILES = $(wildcard boot/*.s include/asm/*.s)
 C_SOURCES = $(wildcard kernel/*.c kernel/memory/*.c kernel/cpu/*.c drivers/*.c cpu/*.c libc/*c fs/*.c gui/*.c)
 HEADERS = $(wildcard include/*.h include/kernel/*.h include/kernel/cpu/*.h include/kernel/memory/*.h include/drivers/*.h include/asm/*.h include/gui/*.h include/fs/*h include/system/*.h)
 
