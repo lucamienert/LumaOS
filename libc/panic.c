@@ -1,4 +1,4 @@
-#include <panic.c>
+#include <panic.h>
 
 extern void panic(const char *message, const char *file, uint32_t line)
 {
