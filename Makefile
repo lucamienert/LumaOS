@@ -1,11 +1,11 @@
 ASM_FILES = $(wildcard boot/*.s include/asm/*.s)
-C_SOURCES = $(wildcard kernel/*.c kernel/memory/*.c kernel/cpu/*.c drivers/*.c cpu/*.c libc/*c fs/*.c gui/*.c)
-HEADERS = $(wildcard include/*.h include/kernel/*.h include/kernel/cpu/*.h include/kernel/memory/*.h include/kernel/net/*.h include/kernel/net/socket/*.h include/drivers/*.h include/asm/*.h include/gui/*.h include/gui/widgets/*.h include/fs/*h include/system/*.h)
+C_SOURCES = $(wildcard kernel/*.c kernel/memory/*.c kernel/cpu/*.c drivers/*.c cpu/*.c libc/*c libc/ds/*.c fs/*.c gui/*.c gui/widgets/*.c)
+HEADERS = $(wildcard include/*.h include/kernel/*.h include/kernel/cpu/*.h include/kernel/memory/*.h include/kernel/net/*.h include/kernel/net/socket/*.h include/drivers/*.h include/asm/*.h include/gui/*.h include/gui/widgets/*.h include/fs/*.h include/system/*.h include/ds/*.h)
 
 C_OBJ_FILES = ${C_SOURCES:.c=.o}
 ASM_OBJ_FILES = ${ASM_FILES:.s=.o}
 
-C_FLAGS = -m32 -ffreestanding -Wall -I./include -nostdlib
+C_FLAGS = -m32 -ffreestanding -Wall -I/include -nostdlib
 
 OUTPUT_ISO = LumaOS.iso
 
