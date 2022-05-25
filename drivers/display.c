@@ -1,107 +1,97 @@
 #include <drivers/display.h>
 #include <asm/ports.h>
-#include <kernel/heap.h>
-#include <string.h>
 
-static void set_cursor(int32 offset) 
+uint16_t *video_memory = (uint16_t*) VIDEO_ADDRESS;
+uint8_t cursor_x = 0;
+uint8_t cursor_y = 0;
+
+static void display_move_cursor()
 {
-    offset /= 2;
+    uint16_t cursorLocation = cursor_y * SCREEN_WIDTH + cursor_x;
     port_byte_out(REG_SCREEN_CTRL, 14);
-    port_byte_out(REG_SCREEN_DATA, (uint8) (offset >> 8));
+    port_byte_out(REG_SCREEN_DATA, cursorLocation >> 8);
     port_byte_out(REG_SCREEN_CTRL, 15);
-    port_byte_out(REG_SCREEN_DATA, (uint8) (offset & 0xff));
+    port_byte_out(REG_SCREEN_DATA, cursorLocation);
 }
 
-static int32 get_cursor() 
+static void display_scroll()
 {
-    port_byte_out(REG_SCREEN_CTRL, 14);
-    int32 offset = port_byte_in(REG_SCREEN_DATA) << 8;
-    port_byte_out(REG_SCREEN_CTRL, 15);
-    offset += port_byte_in(REG_SCREEN_DATA);
-    return offset * 2;
-}
+    uint8_t attributeByte = (BLACK << 4) | (WHITE & 0x0F);
+    uint16_t black = 0x20 | (attributeByte << 8);
 
-static int32 get_offset(int32 col, int32 row) 
-{
-    return 2 * (row * MAX_COLS + col);
-}
-
-static int32 get_row_from_offset(int32 offset) 
-{
-    return offset / (2 * MAX_COLS);
-}
-
-static int32 move_offset_to_new_line(int32 offset) 
-{
-    return get_offset(0, get_row_from_offset(offset) + 1);
-}
-
-static void set_char_at_video_memory(char character, int32 offset) 
-{
-    uint8 *vidmem = (uint8*) VIDEO_ADDRESS;
-    vidmem[offset] = character;
-    vidmem[offset + 1] = WHITE_ON_BLACK;
-}
-
-void print(char *str)
-{
-    int32 offset = get_cursor();
-    int32 i = 0;
-    while (str[i] != 0) 
+    if(cursor_y >= SCREEN_HEIGHT)
     {
-        if (offset >= MAX_ROWS * MAX_COLS * 2)
-            offset = scroll_ln(offset);
-        
-        if (str[i] == '\n')
-            offset = move_offset_to_new_line(offset);
-        else 
-        {
-            set_char_at_video_memory(str[i], offset);
-            offset += 2;
-        }
+        for(int32_t i = 0; i < (SCREEN_HEIGHT - 1) * SCREEN_HEIGHT; ++i)
+            video_memory[i] = video_memory[i + SCREEN_WIDTH];
 
-        ++i;
+        for(int32_t i = (SCREEN_WIDTH - 1) * SCREEN_HEIGHT; i < SCREEN_HEIGHT * SCREEN_WIDTH; ++i)
+            video_memory[i] = blank;
+
+        cursor_y = (SCREEN_HEIGHT - 1);
     }
-    set_cursor(offset);
 }
 
-void print_nl()
+void display_put(char c)
 {
-    int32 newOffset = move_offset_to_new_line(get_cursor());
+    uint8_t backColour = BLACK;
+    uint8_t foreColour = WHITE;
 
-    if (newOffset >= MAX_ROWS * MAX_COLS * 2)
-        newOffset = scroll_ln(newOffset);
+    uint8_t  attributeByte = (backColour << 4) | (foreColour & 0x0F);
 
-    set_cursor(newOffset);
+    uint16_t attribute = attributeByte << 8;
+    uint16_t *location;
+
+    if (c == 0x08 && cursor_x)
+        --cursor_x;
+    else if (c == 0x09)
+        cursor_x = (cursor_x+8) & ~(8-1);
+    else if (c == '\r')
+        cursor_x = 0;
+    else if (c == '\n')
+    {
+        cursor_x = 0;
+        ++cursor_y;
+    }
+    else if(c >= ' ')
+    {
+        location = video_memory + (cursor_y * SCREEN_WIDTH + cursor_x);
+        *location = c | attribute;
+        ++cursor_x;
+    }
+
+    if(cursor_x >= SCREEN_WIDTH)
+    {
+        cursor_x = 0;
+        ++cursor_y;
+    }
+
+    display_scroll();
+    display_move_cursor();
 }
 
-void clear_screen()
+void display_print(char *str)
 {
-    int screen_size = MAX_COLS * MAX_ROWS;
-
-    for (int i = 0; i < screen_size; ++i)
-        set_char_at_video_memory(' ', i * 2);
-
-    set_cursor(get_offset(0, 0));
+    int32_t i = 0;
+    while(str[i])
+        display_put(c[i++]);
 }
 
-int8 scroll_ln(int8 offset)
+void display_clear()
 {
-    memory_copy(
-        (uint8 * )(get_offset(0, 1) + VIDEO_ADDRESS),
-        (uint8 * )(get_offset(0, 0) + VIDEO_ADDRESS),
-        MAX_COLS * (MAX_ROWS - 1) * 2
-    );
+    uint8_t attributeByte = (BLACK << 4) | (WHITE & 0x0F);
+    uint16_t blank = 0x20 | (attributeByte << 8);
 
-    for (int32 col = 0; col < MAX_COLS; col++)
-        set_char_at_video_memory(' ', get_offset(col, MAX_ROWS - 1));
+    for(int32_t i = 0; i < SCREEN_HEIGHT * SCREEN_WIDTH; ++i)
+        video_memory[i] = blank;
 
-    return offset - 2 * MAX_COLS;
+    cursor_x = 0;
+    cursor_y = 0;
+    display_move_cursor();
 }
 
-void print_backspace()
+void display_backspace()
 {
-    int32 newCursor = get_cursor() - 2;
-    set_char_at_video_memory(' ', newCursor);
-    set_cursor(newCursor);
+    --cursor_x;
+    display_put(' ');
+    display_move_cursor();
 }
