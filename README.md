@@ -15,7 +15,7 @@ Features to implement (or already implemented):
 - [x] Keyboard drivers
 - [x] Filesystem (potentially ext2)
 - [ ] Mouse drivers
-- [ ] Terminal (Shell)
+- [x] Terminal (Shell)
 - [x] Dynamic memory allocation
 - [ ] Adding [custom language](https://github.com/lucamienert/lumalang) for further development
 - [ ] Finalizing and adding GUI
@@ -59,8 +59,5 @@ make clean
 - [BrokenThorn Entertainment's Operating System Development Series](http://www.brokenthorn.com/Resources/OSDevIndex.html)
 - [The Little Book About OS Development](https://littleosbook.github.io/)
 - [C Memory Allocation Functions](http://www.sunshine2k.de/articles/coding/cmemalloc/cmemory.html)
-
-## Github Projects
-
 - [Github Project](https://github.com/syedtaqi95/morphiOS)
 - [Github Project](https://github.com/FRosner/FrOS)
