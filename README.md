@@ -59,5 +59,3 @@ make clean
 - [BrokenThorn Entertainment's Operating System Development Series](http://www.brokenthorn.com/Resources/OSDevIndex.html)
 - [The Little Book About OS Development](https://littleosbook.github.io/)
 - [C Memory Allocation Functions](http://www.sunshine2k.de/articles/coding/cmemalloc/cmemory.html)
-- [Github Project](https://github.com/syedtaqi95/morphiOS)
-- [Github Project](https://github.com/FRosner/FrOS)
