@@ -3,6 +3,9 @@
 
 #pragma once
 
-// TODO: Better error handling
+#define FILESYSTEM_ERROR 10
+#define PAGING_ERROR 11
+#define IDT_ERROR 12
+#define ISR_ERROR 13
 
 #endif
