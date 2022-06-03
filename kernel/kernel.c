@@ -26,8 +26,6 @@
 #define HANDLERS 256
 #define TIMER 50
 
-#define KERNEL_VERSION "0.0.2"
-
 extern isr_t interrupt_handlers[];
 extern uint32_t placement_address;
 
@@ -73,7 +71,6 @@ int main(multiboot_t *mboot_ptr, uint32_t initial_stack)
     init_keyboard();
 
     printf("%s\n", str);
-    printf("Current Kernel: %s", KERNEL_VERSION);
 
     init_terminal();
 
