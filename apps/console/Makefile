@@ -1,4 +1,2 @@
-obj = console.o
-target = console
-
-# TODO
+%.o: %.c
+  gcc -I../../include -c console.c -o console.o
