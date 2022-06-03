@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <stdfloat.h>
 
+#define KERNEL_VERSION "0.0.2"
+
 #define SYSINFO_UPTIME 1
 #define SYSINFO_MEMORY 2
 #define SYSINFO_LOG    4
