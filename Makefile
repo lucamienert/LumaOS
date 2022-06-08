@@ -7,6 +7,9 @@ HEADERS = $(wildcard include/*.h include/kernel/*.h include/kernel/cpu/*.h inclu
 C_OBJ_FILES = ${C_SOURCES:.c=.o}
 ASM_OBJ_FILES = ${ASM_FILES:.s=.o}
 
+OBJ_FILES = ${C_SOURCES:.c=.o}
+OBJ_FILES += ${ASM_FILES:.s=.o}
+
 C_FLAGS = -m32 -ffreestanding -Wall -I/include -nostdlib
 
 OUTPUT_ISO = LumaOS.iso
