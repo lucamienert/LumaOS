@@ -1,8 +1,10 @@
 #include <kernel/kernel.h>
-#include <kernel/gdt.h>
-#include <kernel/paging.h>
 #include <kernel/task.h>
 #include <kernel/syscall.h>
+
+#include <kernel/memory/paging.h>
+
+#include <kernel/cpu/gdt.h>
 #include <kernel/cpu/idt.h>
 #include <kernel/cpu/timer.h>
 
