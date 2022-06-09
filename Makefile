@@ -1,6 +1,6 @@
 export
 
-ASM_FILES = $(wildcard boot/*.s include/asm/*.s)
+ASM_FILES = $(wildcard boot/*.s include/asm/*.s kernel/asm/*.s)
 C_SOURCES = $(wildcard kernel/*.c kernel/memory/*.c kernel/cpu/*.c drivers/*.c cpu/*.c libc/*c libc/ds/*.c fs/*.c gui/*.c gui/widgets/*.c)
 HEADERS = $(wildcard include/*.h include/kernel/*.h include/kernel/cpu/*.h include/kernel/memory/*.h include/kernel/net/*.h include/kernel/net/socket/*.h include/drivers/*.h include/asm/*.h include/gui/*.h include/gui/widgets/*.h include/fs/*.h include/system/*.h include/ds/*.h)
 
