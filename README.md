@@ -3,7 +3,7 @@
 ## Description
 
 LumaOS is a x86 32-bit toy operating system, which I am developing to teach myself how computers work.
-It is still in an very early development state, so don't try to use it (it will crash everything).
+It is still in an very early development state, so don't try to use it.
 LumaOS is primarily based on the Tutorials from James Molloy.
 
 Features to implement (or already implemented):
@@ -13,7 +13,7 @@ Features to implement (or already implemented):
 - [x] ISRs for CPU interrupt handling
 - [x] VGA graphics
 - [x] Keyboard drivers
-- [x] Filesystem (potentially ext2)
+- [x] Filesystem (potentially ext2 (or not))
 - [ ] Mouse drivers
 - [x] Terminal (Shell)
 - [x] Dynamic memory allocation
