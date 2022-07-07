@@ -2,7 +2,7 @@
 
 ## Description
 
-LumaOS is a x86 32-bit toy operating system, which I am developing to teach myself how computers work.
+LumaOS is a x86 32-bit toy operating system, which I am developing to teach myself how operating systems work.
 It is still in an very early development state, so don't try to use it.
 LumaOS is primarily based on the Tutorials from James Molloy.
 
