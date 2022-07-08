@@ -46,13 +46,16 @@ int main(multiboot_t *mboot_ptr, uint32_t initial_stack)
     initial_esp = initial_stack;
 
     gdt_init();
+    printf("[Init] GDT...");
     idt_init();
+    printf("[Init] IDT...");
     memset(&interrupt_handlers, 0, sizeof(isr_t) * HANDLERS);
 
     cls();
 
     STI();
     timer_init(TIMER);
+    printf("[Init] Timer...");
 
     ASSERT(mboot_ptr->mods_count > 0);
 
@@ -62,17 +65,24 @@ int main(multiboot_t *mboot_ptr, uint32_t initial_stack)
     placement_address = initrd_end;
 
     init_paging();
+    printf("[Init] Paging...");
     init_tasking();
+    printf("[Init] Tasking...");
 
     filesystem_root = init_initial_ram_disk();
+    printf("[Init] Ramdisk...");
 
     init_syscalls();
+    printf("[Init] Syscalls...");
 
     switch_to_user_mode();
+    printf("[Init] Switching to User Mode...");
 
     init_keyboard();
+    printf("[Init] Keyboard...");
 
     printf("%s\n", str);
+    printf("LumaOS - by Luca Mienert (Copyright 2022)");
 
     init_terminal();
 
