@@ -1,3 +1,11 @@
+/*
+    NOTE:
+
+    This is created by myself. Its only purpose is to provide string functions
+    for the operating system and libraries like LTK and LUI.
+
+    It does not follow the ISO standard
+*/
 #ifndef LUMAOS_STRING_H_
 #define LUMAOS_STRING_H_
 
