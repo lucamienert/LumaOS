@@ -17,7 +17,6 @@ Features to implement (or already implemented):
 - [ ] Mouse drivers
 - [x] Terminal (Shell)
 - [x] Dynamic memory allocation
-- [ ] Adding [custom language](https://github.com/lucamienert/lumalang) for further development
 - [ ] Finalizing and adding GUI
 
 ## Usage
