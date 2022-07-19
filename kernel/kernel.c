@@ -57,7 +57,7 @@ int main(multiboot_t *mboot_ptr, uint32_t initial_stack)
     timer_init(TIMER);
     printf("[Init] Timer...");
 
-    ASSERT(mboot_ptr->mods_count > 0);
+    //ASSERT(mboot_ptr->mods_count > 0);
 
     uint32_t initrd_location = *((uint32_t*) mboot_ptr->mods_addr);
     uint32_t initrd_end = *(uint32_t*)(mboot_ptr->mods_addr + 4);
