@@ -503,44 +503,39 @@ int32_t ext2_stat(ext2_fs_t* fs, uint32_t ino, stat_t* stat)
     return 0;
 }
 
-/* Utility functions */
-
-/* Reads the content of the given block.
- */
-static void read_block(ext2_fs_t* fs, uint32_t block, uint8_t* buf) {
-    // TODO: check for max block ?
+static void read_block(ext2_fs_t* fs, uint32_t block, uint8_t* buf) 
+{
     memcpy(buf, fs->device + block*fs->block_size, fs->block_size);
 }
 
-static void write_block(ext2_fs_t* fs, uint32_t block, uint8_t* buf) {
+static void write_block(ext2_fs_t* fs, uint32_t block, uint8_t* buf) 
+{
     memcpy(fs->device + block*fs->block_size, buf, fs->block_size);
 }
 
-static void clear_block(ext2_fs_t* fs, uint32_t block) {
+static void clear_block(ext2_fs_t* fs, uint32_t block) 
+{
     memset(fs->device + block*fs->block_size, 0, fs->block_size);
 }
 
-static void write_superblock(ext2_fs_t* fs) {
+static void write_superblock(ext2_fs_t* fs) 
+{
     write_block(fs, 1, (uint8_t*) fs->sb);
 }
 
-static void write_group_descriptor(ext2_fs_t* fs, uint32_t group) {
+static void write_group_descriptor(ext2_fs_t* fs, uint32_t group) 
+{
     write_block(fs, 2, (uint8_t*) &fs->group_descriptors[group]);
 }
 
-/* Parses an ext2 superblock from the ext2 partition buffer stored at `data`.
- * Updates `num_block_groups`, and `block_size`.
- * Returns a kmalloc'ed superblock_t struct.
- */
-static superblock_t* parse_superblock(ext2_fs_t* fs) {
+static superblock_t* parse_superblock(ext2_fs_t* fs) 
+{
     superblock_t* sb = kmalloc(1024);
     fs->block_size = 1024;
     read_block(fs, 1, (uint8_t*) sb);
 
-    if (sb->magic != EXT2_MAGIC) {
-        printke("invalid signature: %x", sb->magic);
+    if (sb->magic != EXT2_MAGIC) 
         return NULL;
-    }
 
     fs->num_block_groups = divide_up(sb->blocks_count, sb->blocks_per_group);
     fs->block_size = 1024 << sb->block_size;
@@ -550,57 +545,39 @@ static superblock_t* parse_superblock(ext2_fs_t* fs) {
     return sb;
 }
 
-/* Returns a kmalloc'ed array of `num_block_groups` block group descriptors.
- */
-static group_descriptor_t* parse_group_descriptors(ext2_fs_t* fs) {
+static group_descriptor_t* parse_group_descriptors(ext2_fs_t* fs) 
+{
     uint32_t bgd_block = fs->block_size == 1024 ? 2 : 1;
     uint32_t bgd_size = align_to(fs->num_block_groups * sizeof(group_descriptor_t), fs->block_size);
     group_descriptor_t* bgd = kmalloc(bgd_size);
 
-    for (uint32_t i = 0; i < bgd_size / fs->block_size; i++) {
+    for (uint32_t i = 0; i < bgd_size / fs->block_size; i++)
         read_block(fs, bgd_block + i, (uint8_t*) ((uintptr_t) bgd + i * fs->block_size));
-    }
 
     return bgd;
 }
-
-/* Reads the content of the n-th block of the given inode.
- * Assumes that the requested block exists.
- * `n` is relative to the inode, i.e. it's not an absolute block number.
- * For convenience, reading a non-existent block reads zeros.
- */
-static void read_inode_block(ext2_fs_t* fs, ext2_inode_t* inode, uint32_t n, uint8_t* buf) {
+static void read_inode_block(ext2_fs_t* fs, ext2_inode_t* inode, uint32_t n, uint8_t* buf) 
+{
     uint32_t block = get_inode_block(fs, inode, n);
 
-    if (block) {
+    if (block)
         read_block(fs, block, buf);
-    } else {
+    else
         memset(buf, 0, fs->block_size);
-    }
 }
 
-/* Writes to the `n`-th block of the given inode.
- * If the block didn't exist, it is created.
- */
-static void write_inode_block(ext2_fs_t* fs, ext2_inode_t* inode, uint32_t n, uint8_t* buf) {
+static void write_inode_block(ext2_fs_t* fs, ext2_inode_t* inode, uint32_t n, uint8_t* buf) 
+{
     uint32_t block = get_or_create_inode_block(fs, inode, n);
-
     write_block(fs, block, buf);
 }
 
-/* Returns an inode struct from an inode number.
- * This inode can be freed using `kfree`.
- * Note: doesn't check that the inode is valid.
- */
-static ext2_inode_t* get_inode(ext2_fs_t* fs, uint32_t inode) {
-    if (inode == 0) {
+static ext2_inode_t* get_inode(ext2_fs_t* fs, uint32_t inode) 
+{
+    if (inode == 0)
         return NULL;
-    }
 
-    // which block group is our inode in?
     uint32_t group = (inode - 1) / fs->sb->inodes_per_group;
-
-    // get the location of the inode table from the group block's descriptor
     uint32_t table_block = fs->group_descriptors[group].inode_table;
     uint32_t block_offset = ((inode - 1) * fs->inode_size) / fs->block_size;
     uint32_t index_in_block = (inode - 1) - block_offset * (fs->block_size / fs->inode_size);
@@ -614,37 +591,31 @@ static ext2_inode_t* get_inode(ext2_fs_t* fs, uint32_t inode) {
     return in;
 }
 
-/* Returns a free block number, marking it as used.
- */
 static uint32_t allocate_block(ext2_fs_t* fs) {
-    /* Exit early */
-    if (!fs->sb->free_blocks) {
+    if (!fs->sb->free_blocks)
         return 0;
-    }
 
-    /* Find the first non-full block group */
     uint32_t group;
-    for (group = 0; group < fs->num_block_groups; group++) {
-        if (fs->group_descriptors[group].free_blocs) {
+    for (group = 0; group < fs->num_block_groups; group++) 
+    {
+        if (fs->group_descriptors[group].free_blocs)
             break;
-        }
     }
 
-    /* Go through the bitmap */
     uint32_t bitmap_block = fs->group_descriptors[group].block_bitmap;
     uint32_t block_offset = 0;
     uint8_t* tmp = kmalloc(fs->block_size);
 
-    for (uint32_t i = 0; i < fs->sb->blocks_per_group; i++) {
-        if (i % (8 * fs->block_size) == 0) {
+    for (uint32_t i = 0; i < fs->sb->blocks_per_group; i++) 
+    {
+        if (i % (8 * fs->block_size) == 0)
             read_block(fs, bitmap_block + block_offset++, tmp);
-        }
 
         uint32_t rel_i = i - (block_offset - 1) * 8 * fs->block_size;
         uint8_t chunk = tmp[rel_i / 8];
 
-        /* Free block found: update disk structures */
-        if (!(chunk & (1 << (rel_i % 8)))) {
+        if (!(chunk & (1 << (rel_i % 8)))) 
+        {
             tmp[rel_i / 8] = chunk | 1 << (rel_i % 8);
             write_block(fs, bitmap_block + block_offset - 1, tmp);
             kfree(tmp);
@@ -658,13 +629,13 @@ static uint32_t allocate_block(ext2_fs_t* fs) {
         }
     }
 
-    printke("block allocation failed when it shouldn't have");
     abort();
 
     return 0;
 }
 
-static void free_block(ext2_fs_t* fs, uint32_t block) {
+static void free_block(ext2_fs_t* fs, uint32_t block) 
+{
     uint32_t group_no = block / fs->sb->blocks_per_group;
     uint32_t bitmap_block = fs->group_descriptors[group_no].block_bitmap;
     uint32_t rel_block = block % fs->sb->blocks_per_group;
@@ -682,29 +653,26 @@ static void free_block(ext2_fs_t* fs, uint32_t block) {
     write_group_descriptor(fs, group_no);
 }
 
-/* Returns the first free inode number available.
- */
-static uint32_t allocate_inode(ext2_fs_t* fs) {
-    if (!fs->sb->free_inodes) {
-        printke("allocate_inode: no inodes left");
+static uint32_t allocate_inode(ext2_fs_t* fs) 
+{
+    if (!fs->sb->free_inodes)
         return 0;
-    }
 
-    /* Find a block group with a free inode */
     uint32_t group;
-    for (group = 0; group < fs->num_block_groups; group++) {
-        if (fs->group_descriptors[group].free_inodes) {
+    for (group = 0; group < fs->num_block_groups; group++) 
+    {
+        if (fs->group_descriptors[group].free_inodes)
             break;
-        }
     }
 
-    /* Go through the bitmap, knowing it's at most a block long */
     uint8_t* tmp = kmalloc(fs->block_size);
     uint32_t bitmap_block = fs->group_descriptors[group].inode_bitmap;
     read_block(fs, bitmap_block, tmp);
 
-    for (uint32_t i = 0; i < fs->sb->inodes_per_group; i++) {
-        if (!(tmp[i / 8] & (1 << (i % 8)))) {
+    for (uint32_t i = 0; i < fs->sb->inodes_per_group; i++) 
+    {
+        if (!(tmp[i / 8] & (1 << (i % 8)))) 
+        {
             tmp[i / 8] |= 1 << (i % 8);
             write_block(fs, bitmap_block, tmp);
             kfree(tmp);
@@ -714,31 +682,27 @@ static uint32_t allocate_inode(ext2_fs_t* fs) {
             write_superblock(fs);
             write_group_descriptor(fs, group);
 
-            // The first bit is inode no. 1
             return i + 1;
         }
     }
 
-    printke("inode allocation failed when it shouldn't have");
     abort();
 
     return 0;
 }
 
-/* Marks an inode as free, along with its allocated blocks.
- */
-static void free_inode(ext2_fs_t* fs, uint32_t ino) {
-    /* Free the blocks owned by the inode */
+static void free_inode(ext2_fs_t* fs, uint32_t ino) 
+{
     ext2_inode_t* in = get_inode(fs, ino);
     uint32_t num_blocks = divide_up(in->size_lower, fs->block_size);
     kfree(in);
 
-    for (uint32_t iblock = 0; iblock < num_blocks; iblock++) {
+    for (uint32_t iblock = 0; iblock < num_blocks; iblock++) 
+    {
         uint32_t rblock = get_inode_block(fs, in, iblock);
         free_block(fs, rblock);
     }
 
-    /* Free the inode itself */
     uint8_t* bitmap = kmalloc(fs->block_size);
     uint32_t group_no = ino / fs->sb->inodes_per_group;
     uint32_t bitmap_block = fs->group_descriptors[group_no].inode_bitmap;
@@ -755,13 +719,13 @@ static void free_inode(ext2_fs_t* fs, uint32_t ino) {
     write_group_descriptor(fs, group_no);
 }
 
-/* Returns the minimum size of a directory entry with the given filename.
- */
-static uint32_t min_dir_entry_size(const char* name) {
+static uint32_t min_dir_entry_size(const char* name) 
+{
     return align_to(sizeof(ext2_directory_entry_t) + strlen(name), 4);
 }
 
-static void update_inode(ext2_fs_t* fs, uint32_t ino, ext2_inode_t* in) {
+static void update_inode(ext2_fs_t* fs, uint32_t ino, ext2_inode_t* in) 
+{
     uint32_t group = (ino - 1) / fs->sb->inodes_per_group;
     uint32_t table_block = fs->group_descriptors[group].inode_table;
     uint32_t block_offset = ((ino - 1) * fs->inode_size) / fs->block_size;
@@ -774,48 +738,57 @@ static void update_inode(ext2_fs_t* fs, uint32_t ino, ext2_inode_t* in) {
     kfree(tmp);
 }
 
-static uint32_t get_or_create_inode_block(ext2_fs_t* fs, ext2_inode_t* in, uint32_t n) {
+static uint32_t get_or_create_inode_block(ext2_fs_t* fs, ext2_inode_t* in, uint32_t n) 
+{
     uint32_t p = fs->block_size / sizeof(uint32_t);
     uint32_t ret = 0;
 
-    if (n < 12) {
-        if (!in->dbp[n]) {
+    if (n < 12) 
+    {
+        if (!in->dbp[n]) 
             in->dbp[n] = allocate_block(fs);
-        }
 
         ret = in->dbp[n];
-    } else if (n < 12 + p) {
+    } 
+    else if (n < 12 + p) 
+    {
         uint32_t* tmp = zalloc(fs->block_size);
         uint32_t relblock = n - 12;
 
-        if (!in->sibp) {
+        if (!in->sibp) 
+        {
             in->sibp = allocate_block(fs);
             write_block(fs, in->sibp, (uint8_t*) tmp);
         }
 
         read_block(fs, in->sibp, (uint8_t*) tmp);
 
-        if (!tmp[relblock]) {
+        if (!tmp[relblock]) 
+        {
             tmp[relblock] = allocate_block(fs);
             write_block(fs, in->sibp, (uint8_t*) tmp);
         }
 
         ret = tmp[relblock];
         kfree(tmp);
-    } else if (n < 12 + p + p*p) {
+    } 
+    else if (n < 12 + p + p*p) 
+    {
         uint32_t* tmp = zalloc(fs->block_size);
         uint32_t relblock = n - 12 - p;
         uint32_t offset_a = relblock / p;
         uint32_t offset_b = relblock % p;
 
-        if (!in->dibp) {
+        if (!in->dibp) 
+        {
             in->dibp = allocate_block(fs);
             clear_block(fs, in->dibp);
         }
 
         read_block(fs, in->dibp, (uint8_t*) tmp);
 
-        if (!tmp[offset_a]) {
+        if (!tmp[offset_a]) 
+        {
             tmp[offset_a] = allocate_block(fs);
             clear_block(fs, tmp[offset_a]);
             write_block(fs, in->dibp, (uint8_t*) tmp);
@@ -824,28 +797,33 @@ static uint32_t get_or_create_inode_block(ext2_fs_t* fs, ext2_inode_t* in, uint3
         uint32_t block_a = tmp[offset_a];
         read_block(fs, tmp[offset_a], (uint8_t*) tmp);
 
-        if (!tmp[offset_b]) {
+        if (!tmp[offset_b]) 
+        {
             tmp[offset_b] = allocate_block(fs);
             write_block(fs, block_a, (uint8_t*) tmp);
         }
 
         ret = tmp[offset_b];
         kfree(tmp);
-    } else if (n < 12 + p + p*p + p*p*p) {
+    } 
+    else if (n < 12 + p + p*p + p*p*p) 
+    {
         uint32_t* tmp = zalloc(fs->block_size);
         uint32_t relblock = n - 12 - p - p*p;
         uint32_t offset_a = relblock / (p*p);
         uint32_t offset_b = relblock % (p*p);
         uint32_t offset_c = relblock % p;
 
-        if (!in->tibp) {
+        if (!in->tibp) 
+        {
             in->tibp = allocate_block(fs);
             clear_block(fs, in->tibp);
         }
 
         read_block(fs, in->tibp, (uint8_t*) tmp);
 
-        if (!tmp[offset_a]) {
+        if (!tmp[offset_a]) 
+        {
             tmp[offset_a] = allocate_block(fs);
             clear_block(fs, tmp[offset_a]);
             write_block(fs, in->tibp, (uint8_t*) tmp);
@@ -854,7 +832,8 @@ static uint32_t get_or_create_inode_block(ext2_fs_t* fs, ext2_inode_t* in, uint3
         uint32_t block_a = tmp[offset_a];
         read_block(fs, tmp[offset_a], (uint8_t*) tmp);
 
-        if (!tmp[offset_b]) {
+        if (!tmp[offset_b]) 
+        {
             tmp[offset_b] = allocate_block(fs);
             clear_block(fs, tmp[offset_b]);
             write_block(fs, block_a, (uint8_t*) tmp);
@@ -863,34 +842,38 @@ static uint32_t get_or_create_inode_block(ext2_fs_t* fs, ext2_inode_t* in, uint3
         uint32_t block_b = tmp[offset_b];
         read_block(fs, tmp[offset_b], (uint8_t*) tmp);
 
-        if (!tmp[offset_c]) {
+        if (!tmp[offset_c]) 
+        {
             tmp[offset_c] = allocate_block(fs);
             write_block(fs, block_b, (uint8_t*) tmp);
         }
 
         ret = tmp[offset_c];
         kfree(tmp);
-    } else {
-        printke("invalid inode block");
-    }
+    } 
+    else exit(0);
 
     return ret;
 }
 
-static uint32_t get_inode_block(ext2_fs_t* fs, ext2_inode_t* inode, uint32_t n) {
+static uint32_t get_inode_block(ext2_fs_t* fs, ext2_inode_t* inode, uint32_t n) 
+{
     uint32_t p = fs->block_size / sizeof(uint32_t);
     uint32_t ret = 0;
 
-    if (n < 12) {
+    if (n < 12)
         ret = inode->dbp[n];
-    } else if (n < 12 + p) {
+    else if (n < 12 + p) 
+    {
         uint32_t* tmp = kmalloc(fs->block_size);
         uint32_t relblock = n - 12;
 
         read_block(fs, inode->sibp, (uint8_t*) tmp);
         ret = tmp[relblock];
         kfree(tmp);
-    } else if (n < 12 + p + p*p) {
+    } 
+    else if (n < 12 + p + p*p) 
+    {
         uint32_t* tmp = kmalloc(fs->block_size);
         uint32_t relblock = n - 12 - p;
         uint32_t offset_a = relblock / p;
@@ -900,7 +883,9 @@ static uint32_t get_inode_block(ext2_fs_t* fs, ext2_inode_t* inode, uint32_t n) 
         read_block(fs, tmp[offset_a], (uint8_t*) tmp);
         ret = tmp[offset_b];
         kfree(tmp);
-    } else if (n < 12 + p + p*p + p*p*p) {
+    } 
+    else if (n < 12 + p + p*p + p*p*p) 
+    {
         uint32_t* tmp = kmalloc(fs->block_size);
         uint32_t relblock = n - 12 - p - p*p;
         uint32_t offset_a = relblock / (p*p);
@@ -912,19 +897,18 @@ static uint32_t get_inode_block(ext2_fs_t* fs, ext2_inode_t* inode, uint32_t n) 
         read_block(fs, tmp[offset_b], (uint8_t*) tmp);
         ret = tmp[offset_c];
         kfree(tmp);
-    } else {
-        printke("invalid inode block");
-    }
+    } 
+    else exit(0);
 
     return ret;
 }
 
-static uint32_t add_directory_entry(ext2_fs_t* fs, const char* name, uint32_t d_ino, uint32_t type) {
+static uint32_t add_directory_entry(ext2_fs_t* fs, const char* name, uint32_t d_ino, uint32_t type) 
+{
     ext2_inode_t* d_in = get_inode(fs, d_ino);
 
-    if (!d_in || INODE_TYPE(d_in->type_perms) != INODE_DIR) {
+    if (!d_in || INODE_TYPE(d_in->type_perms) != INODE_DIR)
         return 0;
-    }
 
     list_t* entries = directory_to_entries(fs, d_ino);
     uint32_t ino = allocate_inode(fs);
@@ -936,7 +920,8 @@ static uint32_t add_directory_entry(ext2_fs_t* fs, const char* name, uint32_t d_
 
     write_directory_entries(fs, d_ino, entries);
 
-    if (type == DENT_DIRECTORY) {
+    if (type == DENT_DIRECTORY) 
+    {
         in.type_perms = INODE_DIR;
         update_inode(fs, ino, &in);
 
@@ -950,7 +935,9 @@ static uint32_t add_directory_entry(ext2_fs_t* fs, const char* name, uint32_t d_
 
         write_directory_entries(fs, ino, &dot_list);
         free_directory_entries(&dot_list);
-    } else {
+    } 
+    else 
+    {
         in.type_perms = INODE_FILE;
         update_inode(fs, ino, &in);
     }
@@ -962,7 +949,8 @@ static uint32_t add_directory_entry(ext2_fs_t* fs, const char* name, uint32_t d_
     return ino;
 }
 
-static list_t* directory_to_entries(ext2_fs_t* fs, uint32_t ino) {
+static list_t* directory_to_entries(ext2_fs_t* fs, uint32_t ino) 
+{
     list_t* list = kmalloc(sizeof(list_t));
     *list = LIST_HEAD_INIT(*list);
 
@@ -970,17 +958,18 @@ static list_t* directory_to_entries(ext2_fs_t* fs, uint32_t ino) {
     ext2_inode_t* in = get_inode(fs, ino);
     uint32_t offset = 0;
 
-    if (!in) {
+    if (!in) 
+    {
         kfree(list);
         return NULL;
     }
 
-    while (offset < in->size_lower) {
+    while (offset < in->size_lower) 
+    {
         ent = ext2_readdir(fs, ino, offset);
 
-        if (!ent) {
+        if (!ent)
             break;
-        }
 
         dentry_t* tn = kmalloc(sizeof(dentry_t));
         tn->name = strndup(ent->name, ent->name_len_low);
@@ -997,12 +986,12 @@ static list_t* directory_to_entries(ext2_fs_t* fs, uint32_t ino) {
     return list;
 }
 
-static void write_directory_entries(ext2_fs_t* fs, uint32_t ino, list_t* dir_entries) {
+static void write_directory_entries(ext2_fs_t* fs, uint32_t ino, list_t* dir_entries) 
+{
     ext2_inode_t* in = get_inode(fs, ino);
 
-    if (INODE_TYPE(in->type_perms) != INODE_DIR) {
+    if (INODE_TYPE(in->type_perms) != INODE_DIR)
         return;
-    }
 
     uint8_t* tmp = kmalloc(fs->block_size);
     ext2_directory_entry_t* ent = NULL;
@@ -1011,9 +1000,10 @@ static void write_directory_entries(ext2_fs_t* fs, uint32_t ino, list_t* dir_ent
     dentry_t* tn;
     list_t* iter;
 
-    list_for_each(iter, tn, dir_entries) {
-        if (offset + min_dir_entry_size(tn->name) >= fs->block_size) {
-            printk("write_directory_entries: more than one block");
+    list_for_each(iter, tn, dir_entries) 
+    {
+        if (offset + min_dir_entry_size(tn->name) >= fs->block_size) 
+        {
             offset -= ent->entry_size;
             ent->entry_size = fs->block_size - offset;
             offset = 0;
@@ -1041,7 +1031,8 @@ static void write_directory_entries(ext2_fs_t* fs, uint32_t ino, list_t* dir_ent
     kfree(in);
 }
 
-static dentry_t* make_directory_entry(const char* name, uint32_t ino, uint32_t type) {
+static dentry_t* make_directory_entry(const char* name, uint32_t ino, uint32_t type) 
+{
     dentry_t* tn = kmalloc(sizeof(dentry_t));
 
     tn->inode = ino;
@@ -1051,8 +1042,10 @@ static dentry_t* make_directory_entry(const char* name, uint32_t ino, uint32_t t
     return tn;
 }
 
-static void free_directory_entries(list_t* entries) {
-    while (!list_empty(entries)) {
+static void free_directory_entries(list_t* entries) 
+{
+    while (!list_empty(entries)) 
+    {
         dentry_t* tn = list_first_entry(entries, dentry_t);
         kfree(tn->name);
         kfree(tn);
